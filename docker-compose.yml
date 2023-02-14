@@ -1,0 +1,23 @@
+version: '3'
+services:
+  basic_auth:
+    container_name: basic_auth
+    build:
+      context: .
+      dockerfile: ./container/app/Dockerfile
+    volumes:
+      - ./src/basic_auth:/go/src/basic_auth
+    restart: always
+    tty: true
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - 8081:80
+    volumes:
+      - ./container/nginx/conf.d:/etc/nginx/conf.d
+      # - ./public:/usr/share/nginx/html
+    restart: always
+    tty: true
+    depends_on:
+      - basic_auth
