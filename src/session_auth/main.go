@@ -40,7 +40,11 @@ func main() {
 				"message": "sign in error.",
 			})
 		} else {
-			session := sessions.Default(c)
+			var session = sessions.Default(c)
+			session.Options(sessions.Options{
+				Path:     "/",
+				HttpOnly: true,
+			})
 
 			session.Set("userName", loginRequest.UserName)
 			session.Save()
