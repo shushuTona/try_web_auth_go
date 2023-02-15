@@ -9,6 +9,15 @@ services:
       - ./src/basic_auth:/go/src/basic_auth
     restart: always
     tty: true
+  session_auth:
+    container_name: session_auth
+    build:
+      context: .
+      dockerfile: ./container/app/Dockerfile
+    volumes:
+      - ./src/session_auth:/go/src/session_auth
+    restart: always
+    tty: true
   nginx:
     container_name: nginx
     image: nginx
@@ -21,3 +30,4 @@ services:
     tty: true
     depends_on:
       - basic_auth
+      - session_auth
