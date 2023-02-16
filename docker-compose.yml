@@ -18,6 +18,15 @@ services:
       - ./src/session_auth:/go/src/session_auth
     restart: always
     tty: true
+  jwt_auth:
+    container_name: jwt_auth
+    build:
+      context: .
+      dockerfile: ./container/app/Dockerfile
+    volumes:
+      - ./src/jwt_auth:/go/src/jwt_auth
+    restart: always
+    tty: true
   nginx:
     container_name: nginx
     image: nginx

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sign in</title>
+
+<style>
+    botton {
+        border: 1px solid #000;
+    }
+</style>
+</head>
+<body>
+
+<div>
+    <div>
+        <label>user name: <input type="text" name="user" required></label>
+    </div>
+    <div>
+        <label>password: <input type="password" name="pass" required></label>
+    </div>
+
+    <p class="msg"></p>
+
+    <p>
+        <button type="button">sign in</button>
+    </p>
+</div>
+
+<script>
+    const userNameInput = document.querySelector('input[name="user"]');
+    const passwordInput = document.querySelector('input[name="pass"]');
+    const submitBtn = document.querySelector('button[type="button"]');
+    const msg = document.querySelector('.msg');
+
+    submitBtn.addEventListener('click', async () => {
+        msg.textContent = '';
+
+        const res = await fetch('/jwt_auth/signin', {
+                                                method: "POST",
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({
+                                                    user: userNameInput.value,
+                                                    pass: passwordInput.value
+                                                })
+                                            })
+                                            .catch((err) => err)
+
+        const data = await res.json();
+
+        console.log(data);
+
+        if ( data.code !== 200) {
+            msg.textContent = data.message;
+            return;
+        }
+
+        const option = {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + data.token
+            }
+        }
+        const hello = await fetch( '/jwt_auth/auth/hello',  option )
+                                                .catch( ( err ) => err )
+    
+        console.log( hello );
+    
+        const helloData = await hello.json()
+    
+        console.log( helloData );
+
+        if ( helloData.code ) {
+            msg.textContent = helloData.message;
+            return;
+        }
+
+        msg.textContent = helloData.text;
+    });
+</script>
+</body>
+</html>
